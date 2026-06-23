@@ -11,6 +11,29 @@
 #   name defaults to lowercased basename of FASTA (e.g. trimer.faa -> "trimer").
 set -euo pipefail
 
+# --- environment bootstrap (same as run_pipeline.sh) -----------------------
+AF3_MODULE="AlphaFold3/3.0.1-foss-2024a-CUDA-12.6.0"
+set +u  # the system lmod init scripts trip set -u (unset MODULEPATH etc.)
+if ! command -v module >/dev/null 2>&1; then
+    [ -f /etc/profile.d/lmod.sh ] && source /etc/profile.d/lmod.sh
+    [ -f /etc/profile.d/modules.sh ] && source /etc/profile.d/modules.sh
+fi
+if command -v module >/dev/null 2>&1; then
+    module load "$AF3_MODULE" 2>/dev/null || true
+fi
+set -u
+if ! command -v python3 >/dev/null 2>&1; then
+    cat >&2 <<EOF
+ERROR: python3 not available.
+Run on the EMBL HPC cluster (login node), where the AlphaFold3 module
+provides python + dependencies. Try:
+    module load $AF3_MODULE
+    $(basename "$0") "\$@"
+EOF
+    exit 1
+fi
+# ---------------------------------------------------------------------------
+
 [ $# -ge 2 ] || { echo "Usage: $0 <fasta_path> <output_root> [name]" >&2; exit 1; }
 
 FASTA="$(realpath "$1")"

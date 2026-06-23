@@ -12,6 +12,8 @@ You need to be logged into an EMBL **login node** (`login1.cluster.embl.de` or s
 
 The cluster uses a job scheduler called **SLURM**. You write a job (or a script does it for you), submit it, and SLURM finds a free CPU/GPU somewhere in the cluster, runs your job there, and saves the output. Your jobs run independently of your terminal — **you can close your laptop and come back the next day**.
 
+You **don't** need to set up python or load any modules yourself — the launcher scripts (`run_pipeline.sh`, `multifold.sh`, `run_qc.sh`) auto-load the right AlphaFold3 module on first call. If you've already loaded something else, that's fine, the scripts only top up what's missing.
+
 ---
 
 ## Run it
@@ -81,11 +83,10 @@ sacct -j <jobid> --format=JobID,JobName,State,Elapsed,ExitCode
 The pipeline tells you the exact command. It looks like:
 
 ```bash
-VCO_ROOT=/path/to/where/you/want/output \
-    python3 /path/to/where/you/want/output/scripts/03_qc.py
+/path/to/where/you/want/output/scripts/run_qc.sh /path/to/where/you/want/output
 ```
 
-`VCO_ROOT=...` just tells the script where to find the results. (It's an environment variable — a way to pass a value to a script for one command without editing anything.)
+This wrapper loads the AlphaFold3 module (for python + pandas/numpy/matplotlib) and runs `03_qc.py` against your output directory.
 
 This produces, in `<output>/qc/`:
 
