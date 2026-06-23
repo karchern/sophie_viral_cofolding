@@ -49,19 +49,10 @@ if [ -z "$NAME" ]; then
         | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' '_' | sed 's/__*/_/g; s/^_//; s/_$//')
 fi
 
-mkdir -p "$ROOT"/{data,results,logs,scripts}
+mkdir -p "$ROOT"/{data,results,logs}
 
-# Snapshot input FASTA + the pipeline scripts into the run dir so it stays
-# self-contained and reproducible even if the source tree changes later.
+# Snapshot the input FASTA next to outputs for reproducibility
 cp "$FASTA" "$ROOT/${NAME}.faa"
-cp "$SCRIPTS"/_make_multifold_json.py \
-   "$SCRIPTS"/multifold.sh \
-   "$SCRIPTS"/run_msa_pair.sh \
-   "$SCRIPTS"/run_inference_pair_a100.sh \
-   "$SCRIPTS"/run_inference_pair_h100.sh \
-   "$SCRIPTS"/run_qc.sh \
-   "$SCRIPTS"/03_qc.py \
-   "$ROOT/scripts/"
 
 JSON="$ROOT/data/${NAME}.json"
 python3 "$SCRIPTS/_make_multifold_json.py" "$FASTA" "$JSON" "$NAME"

@@ -23,8 +23,10 @@ One command:
 ```bash
 /g/typas/Personal_Folders/Nic/sophie_viral_cofolding/scripts/run_pipeline.sh \
     /path/to/your_proteins.faa \
-    /path/to/where/you/want/output
+    /g/typas/Personal_Folders/Nic/sophie_viral_cofolding/runs/<your_run_name>
 ```
+
+Convention: name run dirs `YYYY-MM-DD_<short_description>` under the project's `runs/` folder (e.g. `runs/2026-06-23_dimer_all_pairs/`). Past runs live there for reference — see git log for what went in each.
 
 The script will:
 1. Create the output directory
@@ -169,3 +171,16 @@ For plain proteins, one token ≈ one amino acid. AF3 talks in tokens because it
 
 **Where is the pipeline code?**
 [`/g/typas/Personal_Folders/Nic/sophie_viral_cofolding/scripts/`](scripts/) — every output directory also gets its own snapshot of this code in `<output>/scripts/`, so you can reproduce a result years later.
+
+**Where are past runs?**
+[`runs/`](runs/) holds previous co-folding jobs, named `YYYY-MM-DD_<description>`. Each has its own snapshot of inputs (`*.faa`), code (`scripts/`), AF3 outputs (`results/`), and QC (`qc/`). The git log explains what each run was for.
+
+## Multi-chain co-fold (a single complex of N chains, not all pairs)
+
+If you want to predict ONE specific complex (e.g. Ham1×2 + NIa-Pro as a trimer) rather than every-vs-every pairs, use `multifold.sh` instead. It takes the same FASTA / ROOT arguments:
+
+```bash
+/g/typas/.../scripts/multifold.sh <fasta_with_N_chains.faa> <runs/your_run_name>
+```
+
+For homodimers/homotrimers/etc, just put the same protein in the FASTA the appropriate number of times. The script auto-detects identical sequences and tells AF3 to share their MSA (faster, and gives AF3 better paired-MSA signal).

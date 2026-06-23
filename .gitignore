@@ -1,10 +1,15 @@
-# Large AF3 outputs (regenerable; 78 pair_dirs + 78 timestamped inference dirs)
+# Per-run AF3 outputs (huge model files, regenerable)
+runs/*/results/
+
+# SLURM logs per run (noisy, regenerable)
+runs/*/logs/
+
+# Pair input JSONs (regenerable from proteins.faa via 01_generate_pair_jsons.py)
+runs/*/data/pair_jsons/
+
+# Legacy top-level dirs (kept for back-compat with any pre-runs/ pipeline copies)
 results/
-
-# SLURM logs (regenerable, noisy)
 logs/
-
-# Pair input JSONs (regenerable from proteins.faa via scripts/01_generate_pair_jsons.py)
 data/pair_jsons/
 
 # Python caches
